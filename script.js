@@ -21,6 +21,7 @@ form.addEventListener('submit', function (e){
     const book = {
         Title: form.title.value.trim(),
         Author: form.author.value.trim(),
+        Publication: form.publication.value.trim(),
         Pages: parseInt(form.pages.value),
         Read: form.read.value === 'Yes',
     }
@@ -31,13 +32,22 @@ form.addEventListener('submit', function (e){
     // clear the form 
     form.reset();
 })
-// const book = {
-//     Title: 'Game Of Thrones',
-//     Author: 'David Beinoff',
-//     Pages: 1234,
-//     Read: 'No',
-// }
 
+myLibrary.push({
+    Title: 'Game Of Thrones',
+    Author: 'George R. R. Martin',
+    Publication: 'Aug 1, 1996',
+    Pages: 694,
+    Read: 'No',
+}
+,{
+    Title: 'Fire & Blood',
+    Author: 'George R. R. Martin',
+    Publication: 'Nov 20, 2018',
+    Pages:  736,
+    Read: 'Yes',
+}
+);
 // addBookToLibrary(book);
 // Function to add books to the library
 function addBookToLibrary(newBook){
@@ -64,7 +74,8 @@ const display = function displayBooks(){
                 <div class="book-info">
                     <h3>Title: ${book.Title}</h3>
                     <p>Author: ${book.Author}</p>
-                    <p>Pages: ${book.Pages}</p>
+                    <p>No of Pages: ${book.Pages}</p>
+                    <p>Published: ${book.Publication}</p>
                 </div>
                 <div class="card-buttons">
                     <button class="read-btn" ${book.Read ? 'disabled': ''}>READ</button>
@@ -77,7 +88,7 @@ const display = function displayBooks(){
     // Add event listeners to buttons after rendering
     document.querySelectorAll('.read-btn').forEach((button, index) => {
         button.addEventListener('click', () => {
-            myLibrary[index].Read = true; // Mark book as read
+            myLibrary[index].Read = 'Yes'; // Mark book as read
             display(); // Re-render to update button state
         });
     });

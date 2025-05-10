@@ -8,6 +8,17 @@ const myLibrary = [];
 // const book = ['game of thrones', 'db weiss', 8421, true,'Effective Java', 'Joshua Bloch', 416, true, 'Clean Code: Agile Software', 'Robert C . Martin', 464, false,'Eloquent Javascript','Marjin Haverbeke', 472, true, 'You don\'t know JS Yet', 'Kyle Simpson',143,true,'Design Patterns','Erich Gamma',395,true,'Javascript: The Good Part','Douglas Crockford',176,true]
 const form = document.getElementById('bookform');
 
+// Adding a class 
+class Book{
+    // constructor to create a book object
+    constructor(form){
+        this.Title = form.title.value.trim();
+        this.Author = form.author.value.trim();
+        this.Publication = form.publication.value.trim();
+        this.Pages = parseInt(form.pages.value);
+        this.Read = form.read.value === 'Yes';
+    }
+}
 // Add event listener
 form.addEventListener('submit', function (e){
 
@@ -16,22 +27,12 @@ form.addEventListener('submit', function (e){
 
     // reading everything from the form
     const form = e.target;
-    
-    // saving everything into the object
-    const book = {
-        Title: form.title.value.trim(),
-        Author: form.author.value.trim(),
-        Publication: form.publication.value.trim(),
-        Pages: parseInt(form.pages.value),
-        Read: form.read.value === 'Yes',
-    }
-    
-
+    const book = new Book(form);
     // Check for duplicate and add it to the library
     addBookToLibrary(book);
     // clear the form 
     form.reset();
-})
+});
 
 myLibrary.push({
     Title: 'Game Of Thrones',
@@ -48,7 +49,6 @@ myLibrary.push({
     Read: 'Yes',
 }
 );
-// addBookToLibrary(book);
 // Function to add books to the library
 function addBookToLibrary(newBook){
     // Checks for duplicates
@@ -63,43 +63,71 @@ function addBookToLibrary(newBook){
 }
 
 // Function to display the book
-const display = function displayBooks(){
+const display = function displayBooks() {
     // Selecting the book container
     const container = document.getElementById('bookContainer');
-    console.log(myLibrary);
-    // Adding the html values to it
-   const bookHTML = myLibrary.map( 
-        book => 
-            `<div id="book-card">
-                <div class="book-info">
-                    <h3>Title: ${book.Title}</h3>
-                    <p>Author: ${book.Author}</p>
-                    <p>No of Pages: ${book.Pages}</p>
-                    <p>Published: ${book.Publication}</p>
-                </div>
-                <div class="card-buttons">
-                    <button class="read-btn" ${book.Read ? 'disabled': ''}>READ</button>
-                    <button class="delete-btn">Delete</button>
-                </div>
-            </div>`
-        ).join('');
-        container.innerHTML = bookHTML;
+    container.innerHTML = ''; // Clear the container before rendering
 
-    // Add event listeners to buttons after rendering
-    document.querySelectorAll('.read-btn').forEach((button, index) => {
-        button.addEventListener('click', () => {
+    // Loop through the library and create elements
+    myLibrary.forEach((book, index) => {
+        // Create the book card
+        const bookCard = document.createElement('div');
+        bookCard.id = 'book-card';
+
+        // Create the book info section
+        const bookInfo = document.createElement('div');
+        bookInfo.className = 'book-info';
+
+        const title = document.createElement('h3');
+        title.textContent = `Title: ${book.Title}`;
+        const author = document.createElement('p');
+        author.textContent = `Author: ${book.Author}`;
+        const pages = document.createElement('p');
+        pages.textContent = `No of Pages: ${book.Pages}`;
+        const publication = document.createElement('p');
+        publication.textContent = `Published: ${book.Publication}`;
+
+        // Append book info elements
+        bookInfo.appendChild(title);
+        bookInfo.appendChild(author);
+        bookInfo.appendChild(pages);
+        bookInfo.appendChild(publication);
+
+        // Create the card buttons section
+        const cardButtons = document.createElement('div');
+        cardButtons.className = 'card-buttons';
+
+        const readButton = document.createElement('button');
+        readButton.className = 'read-btn';
+        readButton.textContent = 'READ';
+        if (book.Read) {
+            readButton.disabled = true;
+        }
+        readButton.addEventListener('click', () => {
             myLibrary[index].Read = 'Yes'; // Mark book as read
             display(); // Re-render to update button state
         });
-    });
 
-    document.querySelectorAll('.delete-btn').forEach((button, index) => {
-        button.addEventListener('click', () => {
+        const deleteButton = document.createElement('button');
+        deleteButton.className = 'delete-btn';
+        deleteButton.textContent = 'Delete';
+        deleteButton.addEventListener('click', () => {
             myLibrary.splice(index, 1); // Remove book from array
             display(); // Re-render to update display
         });
+
+        // Append buttons to the card buttons section
+        cardButtons.appendChild(readButton);
+        cardButtons.appendChild(deleteButton);
+
+        // Append book info and buttons to the book card
+        bookCard.appendChild(bookInfo);
+        bookCard.appendChild(cardButtons);
+
+        // Append the book card to the container
+        container.appendChild(bookCard);
     });
-}
+};
 display();
 
 //Functions for the Read & Delete button
